@@ -12,9 +12,9 @@ process.on('uncaughtException', (error) => {
 config({ path: '../config.env' });
 import app from '../app';
 
-const port = process.env.SUBSCRIBER_PORT || 3001;
-const server = app.listen(port, () => {
-  debug(`App running on port ${port}...`);
+const PORT = process.env.SUBSCRIBER_PORT || 3001;
+const server = app.listen(PORT, () => {
+  debug(`App running on port ${PORT}...`);
 });
 
 process.on('unhandledRejection', (error) => {

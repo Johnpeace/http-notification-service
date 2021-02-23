@@ -6,6 +6,65 @@ const pubSubClient = new PubSub();
 
 export default class pubsubController {
   /**
+   * @function Subscription
+   * @description Create subscription
+   *
+   * @param {Object} req
+   * @param {Object} res
+   *
+   * @returns {Object} subscription JSON Object
+   */
+  static async subscription(req, res) {
+    const topicName = req.params.topic;
+    const { url } = req.body;
+    const idx = url.lastIndexOf('/');
+
+    if (!idx) return Response.error(400, false, 'Invalid url format', res);
+
+    const pushEndpoint = url.slice(0, idx);
+    const subscriptionName = url.slice(idx + 1);
+
+    if (!subscriptionName)
+      return Response.error(400, false, 'Invalid url format', res);
+
+    try {
+      // Check before creating a topic.
+      const topics = await PubsubRepository.listAllTopics(pubSubClient);
+      const existTopic = topics.some((topic) => topic.name === topicName);
+      if (!existTopic)
+        await PubsubRepository.createTopic(pubSubClient, topicName);
+
+      // Check before creating a subscription
+      const subscriptions = await PubsubRepository.listSubscriptions(
+        pubSubClient
+      );
+      const existSubscription = subscriptions.some(
+        (subscription) => subscription.name === subscriptionName
+      );
+
+      if (existSubscription)
+        return Response.error(409, false, 'Subscription Resource Exist', res);
+
+      await PubsubRepository.createPushSubscription(
+        pubSubClient,
+        pushEndpoint,
+        topicName,
+        subscriptionName
+      );
+
+      return Response.subscriptionResponse(200, topicName, url, res);
+    } catch (error) {
+      return Response.generic(
+        500,
+        'Unable to pull data :(',
+        false,
+        error.toString(),
+        res
+      );
+    }
+  }
+
+  /**
    * @function publish
    * @description Publish an event
    *
@@ -73,65 +132,6 @@ export default class pubsubController {
         'Unable to receive data :(',
         false,
         error,
-        res
-      );
-    }
-  }
-
-  /**
-   * @function Subscription
-   * @description Create subscription
-   *
-   * @param {Object} req
-   * @param {Object} res
-   *
-   * @returns {Object} subscription JSON Object
-   */
-  static async subscription(req, res) {
-    const topicName = req.params.topic;
-    const { url } = req.body;
-    const idx = url.lastIndexOf('/');
-
-    if (!idx) return Response.error(400, false, 'Invalid url format', res);
-
-    const pushEndpoint = url.slice(0, idx);
-    const subscriptionName = url.slice(idx + 1);
-
-    if (!subscriptionName)
-      return Response.error(400, false, 'Invalid url format', res);
-
-    try {
-      // Check before creating a topic
-      const topics = await PubsubRepository.listAllTopics(pubSubClient);
-      const existTopic = topics.some((topic) => topic.name === topicName);
-      if (!existTopic)
-        await PubsubRepository.createTopic(pubSubClient, topicName);
-
-      // Check before creating a subscription
-      const subscriptions = await PubsubRepository.listSubscriptions(
-        pubSubClient
-      );
-      const existSubscription = subscriptions.some(
-        (subscription) => subscription.name === subscriptionName
-      );
-
-      if (existSubscription)
-        return Response.error(409, false, 'Subscription Resource Exist', res);
-
-      await PubsubRepository.createPushSubscription(
-        pubSubClient,
-        pushEndpoint,
-        topicName,
-        subscriptionName
-      );
-
-      return Response.subscriptionResponse(200, topicName, url, res);
-    } catch (error) {
-      return Response.generic(
-        500,
-        'Unable to pull data :(',
-        false,
-        error.toString(),
         res
       );
     }

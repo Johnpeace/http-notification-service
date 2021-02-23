@@ -5,7 +5,7 @@ You may use any frameworks or tools to accomplish this task
 ### Technologies
 * Node.js
 * Express.js
-* Google PubSub
+* Google Cloud PubSub
 
 ## Installation
  > Unzip the project folder
@@ -15,6 +15,8 @@ You may use any frameworks or tools to accomplish this task
  > $ run `yarn`
 
  > Create a google cloud project and download it's service account json file to the root of the project
+
+ > Rename the `.env.sample` to `config.env`
 
  > Update `GOOGLE_APPLICATION_CREDENTIALS` key in the `config.env` to the service account json filename
 
@@ -37,7 +39,7 @@ Request body
 
 Expected response
 {
-  "url": "https://5853ad168967.ngrok.io/test1",
+  "url": "https://5944044f99d7.ngrok.io/test1",
   "topic": "topic1"
 }
 
@@ -46,7 +48,7 @@ The system create a dynamic topic and subscription
 ```
 
 2. To publish
-> POST `http://127.0.0.1/publish/:topic`
+> POST `http://127.0.0.1/publish/topic1`
 ```
 Request body
 {
@@ -81,12 +83,24 @@ The system emit an event and push to all the subscribing http services
  > POST /publish/{topic} - Publish message to topic
 
  ## Project References
+ * [Express.js](https://expressjs.com)
+ * [Node.js](https://nodejs.org/en/docs)
  * [ESLint](https://eslint.org/)
- * [Mocha](https://mochajs.org/)
- * 
+ * [Google Cloud Pub/Sub](https://cloud.google.com/pubsub)
 ## Documentation
  > [Postman collection](https://documenter.getpostman.com/view/10883636/TWDXnGig)
 
 ## Author
 
 > ##### ROPO JOHN OLATUJOYE 
+> * [LinkedIn](https://www.linkedin.com/in/ropo)
+
+> * [Twitter](https://twitter.com/iamfiropo)
+
+![Screenshot](./screenshots/screenshot-1.png)
+
+![Screenshot](./screenshots/screenshot-2.png)
+
+![Screenshot](./screenshots/screenshot-3.png)
+
+![Screenshot](./screenshots/screenshot-4.png)
