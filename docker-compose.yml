@@ -1,0 +1,38 @@
+version: '3.7'
+
+services:
+  pubsub:
+    image: knarz/pubsub-emulator
+  worker:
+    build: .
+    environment:
+      - PUBSUB_EMULATOR_HOST=localhost:8085
+    restart: always
+    links:
+      - pubsub
+
+  publisher-service:
+    build:
+      context: .
+      target: dev
+    container_name: publisher-service
+    restart: always
+    volumes:
+      - .:/usr/src/publisher-service
+    ports:
+      - '3000:3000'
+    depends_on:
+      - pubsub
+
+  subscriber-service:
+    build:
+      context: .
+      target: dev
+    container_name: subscriber-service
+    restart: always
+    volumes:
+      - .:/usr/src/subscriber-service
+    ports:
+      - '3001:3001'
+    depends_on:
+      - pubsub
