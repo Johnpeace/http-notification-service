@@ -8,8 +8,6 @@ You may use any frameworks or tools to accomplish this task
 * Google Cloud PubSub
 
 ## Installation
- > Unzip the project folder
-
  > CD into the project directory
 
  > $ run `yarn`
@@ -97,6 +95,7 @@ The system emit an event and push to all the subscribing http services
 
 > * [Twitter](https://twitter.com/iamfiropo)
 
+## STEP BY STEP SCREENSHOTS
 ![Screenshot](./screenshots/screenshot-1.png)
 
 ![Screenshot](./screenshots/screenshot-2.png)
